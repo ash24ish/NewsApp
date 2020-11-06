@@ -26,7 +26,7 @@ public abstract class NewsRoomDatabase extends RoomDatabase {
         if (mInstance == null) {
             synchronized (NewsRoomDatabase.class) {
                 if (mInstance == null) {
-                    mInstance = Room.databaseBuilder(context,
+                    mInstance = Room.databaseBuilder(context.getApplicationContext(),
                             NewsRoomDatabase.class,
                             DATABASE_NAME)
                             .fallbackToDestructiveMigration()
