@@ -1,0 +1,57 @@
+recycler view default animator
+scroll down to refresh
+okhttpclient retrofit
+what is the use of mvvm pattern in android
+android timestamp to date library
+https://stackoverflow.com/questions/18929929/convert-timestamp-into-current-date-in-android
+
+
+in gradle
+android{
+databinding{
+enabled = true;
+}
+}
+two way data binding means it do 2 things get data & set data.
+@{} single way
+@={} 2ways
+
+
+
+ private void getNews() {
+
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setHasFixedSize(true);
+        DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
+        recyclerView.setItemAnimator(itemAnimator);
+
+        Call<DefaultResponse> call = RetrofitClient.getInstance().getRetrofitApi().getResponse();
+
+        call.enqueue(new Callback<DefaultResponse>() {
+
+            @Override
+            public void onResponse(Call<DefaultResponse> call, Response<DefaultResponse> response) {
+
+                assert response.body() != null;
+                recyclerView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                materialTextView.setVisibility(View.GONE);
+                newsResponseList = response.body().getResponse();
+                //NewsRoomDatabase.getInstance(getApplicationContext()).newsDao().insertAllNews(newsResponseList);
+
+                Log.d(TAG, "onResponse: "+newsResponseList.get(3).getTitle());
+
+                adapter = new NewsRecycler(newsResponseList,MainActivity.this);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "No Internet"+t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: "+t.getMessage());
+                materialTextView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
